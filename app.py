@@ -26,6 +26,11 @@ if st.button("Analyze password"):
             st.success(result["message"])
 
         st.info(f"Suggestion: {result['suggestion']}")
+
+        st.subheader("Character variety")
+
+        for check in result["character_checks"]:
+            st.write(check)
     else:
         st.warning("Please enter a test password first.")
 
