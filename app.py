@@ -16,7 +16,7 @@ if st.button("Analyze password"):
     if password:
         result = analyze_password_length(password)
 
-        st.subheader(f"Length score: {result['score']} / 100")
+        st.subheader(f"Basic score: {result['score']} / 100 — {result['rating']}")
 
         if result["score"] < 40:
             st.error(result["message"])
