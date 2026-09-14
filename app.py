@@ -1,4 +1,5 @@
 import streamlit as st
+from password_analyzer import analyze_password_length
 
 st.set_page_config(page_title="Password Strength Coach")
 
@@ -13,8 +14,19 @@ password = st.text_input(
 
 if st.button("Analyze password"):
     if password:
-        st.success("Your password was received locally. Analysis comes next.")
+        result = analyze_password_length(password)
+
+        st.subheader(f"Length score: {result['score']} / 100")
+
+        if result["score"] < 40:
+            st.error(result["message"])
+        elif result["score"] < 65:
+            st.warning(result["message"])
+        else:
+            st.success(result["message"])
+
+        st.info(f"Suggestion: {result['suggestion']}")
     else:
         st.warning("Please enter a test password first.")
 
-st.caption("Privacy note: This beginner version does not save passwords.")
+st.caption("Privacy note: This local educational version does not save passwords.")
