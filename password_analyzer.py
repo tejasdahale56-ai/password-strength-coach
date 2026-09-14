@@ -49,39 +49,50 @@ def analyze_password_length(password):
 
     character_checks = []
     character_points = 0
+    recommendations = []
 
+    if length < 12:
+        recommendations.append(suggestion)
     if has_lowercase:
         character_checks.append("✓ Contains lowercase letters")
         character_points += 10
     else:
         character_checks.append("• Add lowercase letters")
+        recommendations.append("Include at least one lowercase letter.")
 
     if has_uppercase:
         character_checks.append("✓ Contains uppercase letters")
         character_points += 10
     else:
         character_checks.append("• Add uppercase letters")
+        recommendations.append("Include at least one uppercase letter.")
 
     if has_number:
         character_checks.append("✓ Contains numbers")
         character_points += 10
     else:
         character_checks.append("• Add a number")
+        recommendations.append("Include at least one number.")
 
     if has_symbol:
         character_checks.append("✓ Contains symbols")
         character_points += 10
     else:
         character_checks.append("• Add a symbol, such as ! or @")
+        recommendations.append("Include at least one symbol, such as ! or @.")
 
     score = length_points + character_points
     pattern_warnings = []
+    
 
     lowercase_password = password.lower()
     if lowercase_password in COMMON_PASSWORDS:
         score -= 50
         pattern_warnings.append(
             "⚠ This is a commonly guessed password. Use a unique passphrase instead."
+        )
+        recommendations.append(
+            "Use a unique passphrase that is not a common password."
         )
 
     common_patterns = [
@@ -102,12 +113,21 @@ def analyze_password_length(password):
         pattern_warnings.append(
             "⚠ Predictable sequence detected, such as 123, abc, or qwerty."
         )
+        recommendations.append(
+            "Avoid sequences such as 123, abc, and qwerty."
+        )
+        
+
 
     if re.search(r"(.)\1{3,}", password):
         score -= 20
         pattern_warnings.append(
             "⚠ Repeated characters detected, such as aaaa or 1111."
         )
+        recommendations.append(
+            "Avoid repeating one character four or more times in a row."
+        )
+        
 
     score = max(0, score)
 
@@ -126,5 +146,6 @@ def analyze_password_length(password):
         "message": message,
         "suggestion": suggestion,
         "character_checks": character_checks,
-        "pattern_warnings": pattern_warnings
+        "pattern_warnings": pattern_warnings,
+        "recommendations": recommendations
     }

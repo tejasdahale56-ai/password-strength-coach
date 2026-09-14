@@ -17,6 +17,7 @@ if st.button("Analyze password"):
         result = analyze_password_length(password)
 
         st.subheader(f"Basic score: {result['score']} / 100 — {result['rating']}")
+        st.progress(result["score"])
 
         if result["score"] < 40:
             st.error(result["message"])
@@ -25,14 +26,18 @@ if st.button("Analyze password"):
         else:
             st.success(result["message"])
 
-        st.info(f"Suggestion: {result['suggestion']}")
+        if result["recommendations"]:
+            st.subheader("How to improve")
+
+            for recommendation in result["recommendations"]:
+                st.info(recommendation)
 
         st.subheader("Character variety")
 
         for check in result["character_checks"]:
             st.write(check)
         if result["pattern_warnings"]:
-            st.subheader("Predictability warnings")
+            st.subheader("Security warnings")
 
             for warning in result["pattern_warnings"]:
                 st.error(warning)
