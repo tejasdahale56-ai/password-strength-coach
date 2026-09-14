@@ -1,4 +1,22 @@
 import re
+from pathlib import Path
+
+
+def load_common_passwords():
+    file_path = Path(__file__).with_name("common_passwords.txt")
+
+    if not file_path.exists():
+        return set()
+
+    with file_path.open(encoding="utf-8") as file:
+        return {
+            line.strip().lower()
+            for line in file
+            if line.strip()
+        }
+
+
+COMMON_PASSWORDS = load_common_passwords()
 
 
 def analyze_password_length(password):
@@ -60,6 +78,11 @@ def analyze_password_length(password):
     pattern_warnings = []
 
     lowercase_password = password.lower()
+    if lowercase_password in COMMON_PASSWORDS:
+        score -= 50
+        pattern_warnings.append(
+            "⚠ This is a commonly guessed password. Use a unique passphrase instead."
+        )
 
     common_patterns = [
         "123",
