@@ -31,6 +31,11 @@ if st.button("Analyze password"):
 
         for check in result["character_checks"]:
             st.write(check)
+        if result["pattern_warnings"]:
+            st.subheader("Predictability warnings")
+
+            for warning in result["pattern_warnings"]:
+                st.error(warning)
     else:
         st.warning("Please enter a test password first.")
 

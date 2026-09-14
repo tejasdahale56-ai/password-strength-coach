@@ -1,3 +1,6 @@
+import re
+
+
 def analyze_password_length(password):
     length = len(password)
 
@@ -54,6 +57,36 @@ def analyze_password_length(password):
         character_checks.append("• Add a symbol, such as ! or @")
 
     score = length_points + character_points
+    pattern_warnings = []
+
+    lowercase_password = password.lower()
+
+    common_patterns = [
+        "123",
+        "234",
+        "345",
+        "456",
+        "567",
+        "678",
+        "789",
+        "890",
+        "abc",
+        "qwerty"
+    ]
+
+    if any(pattern in lowercase_password for pattern in common_patterns):
+        score -= 20
+        pattern_warnings.append(
+            "⚠ Predictable sequence detected, such as 123, abc, or qwerty."
+        )
+
+    if re.search(r"(.)\1{3,}", password):
+        score -= 20
+        pattern_warnings.append(
+            "⚠ Repeated characters detected, such as aaaa or 1111."
+        )
+
+    score = max(0, score)
 
     if score < 30:
         rating = "Weak"
@@ -69,5 +102,6 @@ def analyze_password_length(password):
         "rating": rating,
         "message": message,
         "suggestion": suggestion,
-        "character_checks": character_checks
+        "character_checks": character_checks,
+        "pattern_warnings": pattern_warnings
     }
